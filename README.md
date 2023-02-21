@@ -27,6 +27,7 @@ Step 6: Now Run-->Run Module
 ----------------------------------------------------
 
 Task 1: 
+---------
 Declare a variable that decides the board layout (for example 3 implies 3 x 3 board, while 4 implies 4x4 board)
 Make changes to the code such that the opponent (who plays 'O') is automated using a probability transition function.
 
