@@ -40,7 +40,7 @@ class Game:
                                80, self.screen_height // 2, 160, 50)
 
         # create empty board_size x board_size list to represent the grid
-        for x in range(self.board_size):
+        for _ in range(self.board_size):
             self.row = [0] * self.board_size
             self.markers.append(self.row)
 

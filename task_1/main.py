@@ -3,7 +3,7 @@ from game import Game
 
 if __name__ == '__main__':
 
-    game = Game(4)
+    game = Game(board_size=3)
 
     # main loop
     run = True
