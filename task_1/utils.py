@@ -6,7 +6,8 @@ class Utils:
 
     def _populate_state_space(self, state, i, j, board_size) -> None:
         if(i == board_size):
-            self.state_space.append(state[:])
+            if(abs(sum(state)) < 2):
+                self.state_space.append(state[:])
             return
 
         next_i = i+1 if j == board_size-1 else i

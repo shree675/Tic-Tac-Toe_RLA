@@ -1,9 +1,13 @@
 import pygame
+import numpy as np
 from game import Game
+from dynamics import Dynamics
 
 if __name__ == '__main__':
 
-    game = Game(board_size=3)
+    board_size = 4
+    game = Game(board_size)
+    dynamics = Dynamics(board_size)
 
     # main loop
     run = True
@@ -12,6 +16,8 @@ if __name__ == '__main__':
         # draw board and markers first
         game.draw_board()
         game.draw_markers()
+
+        game.player = 1
 
         # handle events
         for event in pygame.event.get():
@@ -29,8 +35,16 @@ if __name__ == '__main__':
                     cell_x = pos[0] // 100
                     cell_y = pos[1] // 100
                     if game.markers[cell_x][cell_y] == 0:
+                        prev_state = np.array(game.markers).reshape(
+                            1, board_size*board_size).tolist()[0]
                         game.markers[cell_x][cell_y] = game.player
-                        game.player *= -1
+                        game.check_game_over()
+                        if game.game_over == True:
+                            break
+                        prev_action = (cell_x, cell_y)
+                        next_state = dynamics.p_trans(prev_action, prev_state)
+                        game.markers = np.array(next_state).reshape(
+                            board_size, board_size).tolist()
                         game.check_game_over()
 
         # check if game has been won

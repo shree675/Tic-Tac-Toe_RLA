@@ -14,9 +14,16 @@ class Dynamics:
         # create a random transition function
         self.gen_transitions()
 
-    def p_trans(self, next_state, prev_action, prev_state) -> object:
-        # return self.transitions[tuple(prev_state)][tuple(prev_action)][tuple(next_state)]
-        pass
+    def p_trans(self, prev_action, prev_state) -> tuple:
+        probability = random.random()
+        probability_sum = 0
+        for key, value in self.transitions[(tuple(prev_state), tuple(prev_action))].items():
+            probability_sum += value
+            if(probability_sum >= probability):
+                return key
+
+        if(probability_sum == 0):
+            return Exception("No transition recorded for the given state and action")
 
     def gen_transitions(self) -> None:
         self.state_space = self.utils.populate_state_space()
@@ -44,13 +51,10 @@ class Dynamics:
                             sum_probabilities += probability
                             new_state[k] = 0
 
-                # normalizing the probabilities
-                for key, value in self.transitions[(tuple(state), tuple(action))].items():
-                    self.transitions[(tuple(state), tuple(action))][tuple(key)] = value / \
-                        sum_probabilities
-
-        for key, value in self.transitions.items():
-            print(key, ',', value)
+                    # normalizing the probabilities
+                    for key, value in self.transitions[(tuple(state), tuple(action))].items():
+                        self.transitions[(tuple(state), tuple(action))][tuple(key)] = value / \
+                            sum_probabilities
 
 
-dynamics = Dynamics(2)
+# (n^4)(3^(n**2)) = 11e9
