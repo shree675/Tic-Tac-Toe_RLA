@@ -12,7 +12,6 @@ if __name__ == '__main__':
     # main loop
     run = True
     while run:
-
         # draw board and markers first
         game.draw_board()
         game.draw_markers()

@@ -37,7 +37,3 @@ class Utils:
         if(state[i*self.board_size+j] != 0):
             return False
         return True
-
-
-# utils = Utils()
-# utils.populate_state_space(3)

@@ -6,9 +6,6 @@ from pygame.locals import *
 class Game:
 
     def __init__(self, board_size):
-        # global game_over
-        # global winner
-
         pygame.init()
 
         self.line_width = 6
@@ -71,7 +68,6 @@ class Game:
             x_pos += 1
 
     def check_game_over(self):
-
         x_pos = 0
         for x in self.markers:
             # check columns
@@ -119,7 +115,6 @@ class Game:
                 self.winner = 0
 
     def draw_game_over(self, winner):
-
         if winner != 0:
             end_text = "Player " + str(winner) + " wins!"
         elif winner == 0:
