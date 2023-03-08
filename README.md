@@ -1,4 +1,4 @@
-# Programming Assignment: Reinforcement Learning Algorithms (CS533L)
+# Programming Assignment: Reinforcement Learning Algorithms
 
 Shreetesh M  
 CS19B037
@@ -8,17 +8,17 @@ CS19B037
 - Install Python from https://www.python.org/downloads/release/python-380/. During installation please ensure that some features are selected (see that attached pic pythoninstallation.png)
 - Run the following:
 
-```powershell
-pip3 install numpy
-pip3 install scipy
-pip3 install pygame
-```
+  ```console
+  pip3 install numpy
+  pip3 install scipy
+  pip3 install pygame
+  ```
 
 - In each of the folders _task_1_ and _task_2_, run **main.py** to execute the program:
 
-```powershell
-python main.py
-```
+  ```console
+  python main.py
+  ```
 
 ## Tasks
 
