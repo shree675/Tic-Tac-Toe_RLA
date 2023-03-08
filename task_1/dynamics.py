@@ -19,28 +19,30 @@ class Dynamics:
         generating probability transition function on-the-fly
         for a given action and state
         """
-        prev_state[prev_action[0]*self.board_size+prev_action[1]] = 1
-        next_state = defaultdict(dict)
+        state = (tuple(prev_action[:]), tuple(prev_state))
+        if(not state in self.transitions):
+            prev_state[prev_action[0]*self.board_size+prev_action[1]] = 1
 
-        sum_probabilities = 0
-        for (i, j) in self.action_space:
-            if(self.utils.is_valid(prev_state, (i, j))):
-                probability = random.randint(
-                    1, 3**(self.board_size**2))
-                k = i*self.board_size+j
-                prev_state[k] = -1
-                next_state[tuple(prev_state)] = probability
-                sum_probabilities += probability
-                prev_state[k] = 0
+            sum_probabilities = 0
+            for (i, j) in self.action_space:
+                if(self.utils.is_valid(prev_state, (i, j))):
+                    probability = random.randint(
+                        1, 3**(self.board_size**2))
+                    k = i*self.board_size+j
+                    prev_state[k] = -1
+                    self.transitions[state][tuple(prev_state)] = probability
+                    sum_probabilities += probability
+                    prev_state[k] = 0
 
-        # normalizing the probabilities
-        for key, value in next_state.items():
-            next_state[tuple(key)] = value / sum_probabilities
+            # normalizing the probabilities
+            for key, value in self.transitions[state].items():
+                self.transitions[state][tuple(
+                    key)] = value / sum_probabilities
 
         # choosing the next state based on the set probability distribution
         probability = random.random()
         probability_sum = 0
-        for key, value in next_state.items():
+        for key, value in self.transitions[state].items():
             probability_sum += value
             if(probability_sum >= probability):
                 return key

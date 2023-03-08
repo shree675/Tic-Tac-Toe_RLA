@@ -1,6 +1,6 @@
 # Programming Assignment: Reinforcement Learning Algorithms (CS533L)
 
-Shreetesh M
+Shreetesh M  
 CS19B037
 
 ## Setup and Installation
