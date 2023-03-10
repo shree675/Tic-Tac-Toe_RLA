@@ -178,8 +178,8 @@ class Dynamics:
                 break
 
         if(self.utils.is_winning_configuration(next_state)):
-            new_score += 100
+            new_score += 10
         elif(self.utils.is_losing_configuration(next_state)):
-            new_score -= 100
+            new_score -= 10
 
         return (new_score - prev_score)
