@@ -68,7 +68,7 @@ class Dynamics:
 
         self.action_space = [(i, j) for i in range(self.board_size)
                              for j in range(self.board_size)]
-        random.shuffle(self.action_space)
+        # random.shuffle(self.action_space)
 
         # initializing the policy
         for state in self.state_space.keys():
@@ -134,6 +134,11 @@ class Dynamics:
         """
         a handcrafted reward function
         based on the number of paths blocked for the opponent
+
+        one step average reward is the same as this
+        reward function since this function does not
+        depend on the next state, it purely evaluates
+        the action taken by the policy
         """
         prev_score = 0
         for i in range(self.board_size):

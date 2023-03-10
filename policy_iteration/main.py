@@ -14,7 +14,7 @@ if __name__ == '__main__':
     cmp = True
     num_trials = 500
     num_wins = 0
-    num_losses = 0
+    num_ties = 0
     trial = 0
 
     # main loop
@@ -55,8 +55,8 @@ if __name__ == '__main__':
             if(cmp is True):
                 if(game.winner == game.player):
                     num_wins += 1
-                elif(game.winner == game.player+1):
-                    num_losses += 1
+                elif(game.winner == 0):
+                    num_ties += 1
             if(not cmp):
                 if event is not None and event.type == pygame.MOUSEBUTTONDOWN and game.clicked == False:
                     game.clicked = True
@@ -91,8 +91,8 @@ if __name__ == '__main__':
                 else:
                     print("Number of games:", num_trials)
                     print("Number of wins:", num_wins)
-                    print("Number of losses:", num_losses)
-                    print("Number of ties:", num_trials-(num_wins+num_losses))
+                    print("Number of losses:", num_trials-(num_wins+num_ties))
+                    print("Number of ties:", num_ties)
                     run = False
 
         # update display
