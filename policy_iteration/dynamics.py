@@ -90,20 +90,21 @@ class Dynamics:
             new_value = defaultdict(float)
             pi = defaultdict(tuple)
             # policy evaluation
-            for s, _ in self.state_space.items():
-                action = cur_policy(s)
-                if(action is None):
-                    continue
-                assert(type(s) == tuple)
-                new_value[s] = self.reward(list(s), action)
-                __ = self.p_trans(action, list(s))
-                state = (tuple(action), s)
-                product_sum = 0
-                if(state in self.transitions):
-                    for s_prime, probability in self.transitions[state].items():
-                        product_sum += probability*value[s_prime]
-                new_value[s] += self.gamma*product_sum
-            value = copy.deepcopy(new_value)
+            for k in range(10):
+                for s, _ in self.state_space.items():
+                    action = cur_policy(s)
+                    if(action is None):
+                        continue
+                    new_value[s] = self.reward(list(s), action)
+                    if(k == 0):
+                        __ = self.p_trans(action, list(s))
+                    state = (tuple(action), s)
+                    product_sum = 0
+                    if(state in self.transitions):
+                        for s_prime, probability in self.transitions[state].items():
+                            product_sum += probability*value[s_prime]
+                    new_value[s] += self.gamma*product_sum
+                value = copy.deepcopy(new_value)
             # policy improvement
             for s, _ in self.state_space.items():
                 best_action_val = -1.0
@@ -175,5 +176,10 @@ class Dynamics:
             if(next_state[i*self.board_size+(self.board_size-i-1)] == 1):
                 new_score += 1
                 break
+
+        if(self.utils.is_winning_configuration(next_state)):
+            new_score += 10
+        elif(self.utils.is_losing_configuration(next_state)):
+            new_score -= 10
 
         return (new_score - prev_score)

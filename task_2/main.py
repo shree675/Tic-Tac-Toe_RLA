@@ -11,6 +11,13 @@ if __name__ == '__main__':
 
     game.player = 1
 
+    cmp = True
+    if(cmp == True):
+        num_trials = 500
+        num_wins = 0
+        num_losses = 0
+        trial = 0
+
     # main loop
     run = True
     while run:
@@ -42,13 +49,32 @@ if __name__ == '__main__':
         # check if game has been won
         if game.game_over == True:
             game.draw_game_over(game.winner)
+            if(cmp is True):
+                if(game.winner == game.player):
+                    num_wins += 1
+                elif(game.winner == game.player+1):
+                    num_losses += 1
             # check for mouseclick to see if we clicked on Play Again
-            if event.type == pygame.MOUSEBUTTONDOWN and game.clicked == False:
-                game.clicked = True
-            if event.type == pygame.MOUSEBUTTONUP and game.clicked == True:
-                game.clicked = False
-                pos = pygame.mouse.get_pos()
-                if game.again_rect.collidepoint(pos):
+            if(not cmp):
+                if event.type == pygame.MOUSEBUTTONDOWN and game.clicked == False:
+                    game.clicked = True
+                if event.type == pygame.MOUSEBUTTONUP and game.clicked == True:
+                    game.clicked = False
+                    pos = pygame.mouse.get_pos()
+                    if game.again_rect.collidepoint(pos):
+                        # reset variables
+                        game.game_over = False
+                        game.player = 1
+                        game.pos = (0, 0)
+                        game.markers = []
+                        game.winner = 0
+                        # create empty board_size x board_size list to represent the grid
+                        for x in range(game.board_size):
+                            game.row = [0] * game.board_size
+                            game.markers.append(game.row)
+            else:
+                if(trial < num_trials):
+                    game.clicked = False
                     # reset variables
                     game.game_over = False
                     game.player = 1
@@ -59,6 +85,13 @@ if __name__ == '__main__':
                     for x in range(game.board_size):
                         game.row = [0] * game.board_size
                         game.markers.append(game.row)
+                    trial += 1
+                else:
+                    print("Number of games:", num_trials)
+                    print("Number of wins:", num_wins)
+                    print("Number of losses:", num_losses)
+                    print("Number of ties:", num_trials-(num_wins+num_losses))
+                    run = False
 
         # update display
         pygame.display.update()
