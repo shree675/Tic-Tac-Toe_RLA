@@ -68,7 +68,7 @@ class Dynamics:
 
         self.action_space = [(i, j) for i in range(self.board_size)
                              for j in range(self.board_size)]
-        # random.shuffle(self.action_space)
+        random.shuffle(self.action_space)
 
         # initializing the policy
         for state in self.state_space.keys():
@@ -78,57 +78,52 @@ class Dynamics:
 
     def obtain_optimal_policy(self) -> None:
         """
-        policy iteration
+        value iteration
         """
-        num_iterations = 0
-        # start with a random policy function
-        cur_policy = self.policy
+        num_iterations = 10
+        # start with a random value function
         value = defaultdict(float)
-
-        while True:
-            num_iterations += 1
-            new_value = defaultdict(float)
-            pi = defaultdict(tuple)
-            # policy evaluation
-            for k in range(10):
-                for s, _ in self.state_space.items():
-                    action = cur_policy(s)
-                    if(action is None):
-                        continue
-                    new_value[s] = self.reward(list(s), action)
-                    if(k == 0):
-                        __ = self.p_trans(action, list(s))
-                    state = (tuple(action), s)
-                    product_sum = 0
-                    if(state in self.transitions):
-                        for s_prime, probability in self.transitions[state].items():
-                            product_sum += probability*value[s_prime]
-                    new_value[s] += self.gamma*product_sum
-                value = copy.deepcopy(new_value)
-            # policy improvement
-            for s, _ in self.state_space.items():
-                best_action_val = -1.0
-                best_action = None
+        new_value = defaultdict(float)
+        pi = defaultdict(tuple)
+        # value iteration
+        for k in range(num_iterations):
+            for s in self.state_space.keys():
+                max_val = 0.0
                 for action in self.action_space:
                     if(not self.utils.is_valid(s, action)):
                         continue
-                    action_val = self.reward(list(s), action)
-                    state = (tuple(action), s)
+                    val = self.reward(list(s), action)
+                    if(k == 0):
+                        _ = self.p_trans(action, list(s))
+                    state = (action, s)
                     product_sum = 0
                     if(state in self.transitions):
                         for s_prime, probability in self.transitions[state].items():
                             product_sum += probability*value[s_prime]
-                    action_val += self.gamma*product_sum
-                    if(best_action_val < action_val):
-                        best_action_val = action_val
-                        best_action = action
-                pi[s] = best_action   # type: ignore
+                    val += self.gamma*product_sum
+                    max_val = max(max_val, val)
+                new_value[s] = max_val
+            value = copy.deepcopy(new_value)
+        # policy generation
+        for s in self.state_space.keys():
+            best_action_val = -1.0
+            best_action = None
+            for action in self.action_space:
+                if(not self.utils.is_valid(s, action)):
+                    continue
+                action_val = self.reward(list(s), action)
+                state = (tuple(action), s)
+                product_sum = 0
+                if(state in self.transitions):
+                    for s_prime, probability in self.transitions[state].items():
+                        product_sum += probability*value[s_prime]
+                action_val += self.gamma*product_sum
+                if(best_action_val < action_val):
+                    best_action_val = action_val
+                    best_action = action
+            pi[s] = best_action   # type: ignore
 
-            if(self.optimal_policy == pi):
-                break
-            self.optimal_policy = copy.deepcopy(pi)
-
-        print('Number of policy iterations: {}'.format(num_iterations))
+        self.optimal_policy = pi
 
     def reward(self, prev_state, action) -> float:
         """
