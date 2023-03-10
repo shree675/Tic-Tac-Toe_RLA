@@ -80,6 +80,7 @@ class Dynamics:
         """
         value iteration
         """
+        # TODO: num_iterations must follow the derived condition
         num_iterations = 10
         # start with a random value function
         value = defaultdict(float)
@@ -112,7 +113,7 @@ class Dynamics:
                 if(not self.utils.is_valid(s, action)):
                     continue
                 action_val = self.reward(list(s), action)
-                state = (tuple(action), s)
+                state = (action, s)
                 product_sum = 0
                 if(state in self.transitions):
                     for s_prime, probability in self.transitions[state].items():
