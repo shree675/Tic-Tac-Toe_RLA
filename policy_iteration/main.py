@@ -75,6 +75,7 @@ if __name__ == '__main__':
                             game.row = [0] * game.board_size
                             game.markers.append(game.row)
             else:
+                trial += 1
                 if(trial < num_trials):
                     game.clicked = False
                     # reset variables
@@ -87,7 +88,6 @@ if __name__ == '__main__':
                     for x in range(game.board_size):
                         game.row = [0] * game.board_size
                         game.markers.append(game.row)
-                    trial += 1
                 else:
                     print("Number of games:", num_trials)
                     print("Number of wins:", num_wins)
