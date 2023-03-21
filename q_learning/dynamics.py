@@ -6,16 +6,16 @@ import random
 class Dynamics:
 
     def __init__(self, board_size) -> None:
-        self.transitions = defaultdict(dict)
         self.board_size = board_size
-        self.state_space = defaultdict(dict)
         self.actions_space = []
         self.utils = Utils(board_size)
+        self.transitions = defaultdict(dict)
+        self.state_space = defaultdict(dict)
         self.optimal_policy = defaultdict(tuple)
-        self.gamma = 0.9
-        self.epsilon = 0.8
-        self.alpha = 0.7
         self.q = defaultdict(lambda: defaultdict(float))
+        self.gamma = 0.9
+        self.alpha = 0.7
+        self.epsilon = 0.8
 
         self.generate_spaces()
         self.obtain_optimal_policy()
