@@ -1,7 +1,6 @@
 from utils import Utils
 from collections import defaultdict
 import random
-import copy
 
 
 class Dynamics:
@@ -13,7 +12,10 @@ class Dynamics:
         self.actions_space = []
         self.utils = Utils(board_size)
         self.optimal_policy = defaultdict(tuple)
-        self.gamma = 0.8
+        self.gamma = 0.9
+        self.epsilon = 0.8
+        self.alpha = 0.7
+        self.q = defaultdict(lambda: defaultdict(float))
 
         self.generate_spaces()
         self.obtain_optimal_policy()
@@ -52,7 +54,7 @@ class Dynamics:
                 return key
 
         if(probability_sum == 0):
-            return Exception("No transition recorded for the given state and action")
+            return None
 
     def policy(self, state) -> tuple | None:
         """
@@ -78,54 +80,65 @@ class Dynamics:
 
     def obtain_optimal_policy(self) -> None:
         """
-        value iteration
+        epsilon-greedy Q learning
         """
-        num_iterations = 10
-        # start with a random value function
-        value = defaultdict(float)
-        new_value = defaultdict(float)
-        pi = defaultdict(tuple)
-        # value iteration
-        for k in range(num_iterations):
-            for s in self.state_space.keys():
-                max_val = 0.0
-                for action in self.action_space:
-                    if(not self.utils.is_valid(s, action)):
-                        continue
-                    val = self.reward(list(s), action)
-                    if(k == 0):
-                        _ = self.p_trans(action, list(s))
-                    state = (action, s)
-                    product_sum = 0
-                    if(state in self.transitions):
-                        for s_prime, probability in self.transitions[state].items():
-                            product_sum += probability*value[s_prime]
-                    val += self.gamma*product_sum
-                    max_val = max(max_val, val)
-                new_value[s] = max_val
-            value = copy.deepcopy(new_value)
-        # policy generation
-        for s in self.state_space.keys():
-            best_action_val = -1.0
-            best_action = None
-            for action in self.action_space:
-                if(not self.utils.is_valid(s, action)):
-                    continue
-                action_val = self.reward(list(s), action)
-                state = (action, s)
-                product_sum = 0
-                if(state in self.transitions):
-                    for s_prime, probability in self.transitions[state].items():
-                        product_sum += probability*value[s_prime]
-                action_val += self.gamma*product_sum
-                if(best_action_val < action_val):
-                    best_action_val = action_val
-                    best_action = action
-            pi[s] = best_action   # type: ignore
+        num_episodes = 20000
+        episode = 0
+        cur_state = [0 for _ in range(self.board_size**2)]
 
-        self.optimal_policy = pi
+        while(episode < num_episodes):
+            probability = random.random()
+            action = None
+            if(probability <= self.epsilon or not tuple(cur_state) in self.q):
+                # explore
+                action = random.choice(self.action_space)
+                while(not self.utils.is_valid(cur_state, action)):
+                    action = random.choice(self.action_space)
+            else:
+                # exploit
+                max_val = float('-inf')
+                for a, q_val in self.q[tuple(cur_state)].items():
+                    if(max_val < q_val):
+                        max_val = q_val
+                        action = a
+            if(action is None):
+                action = random.choice(self.action_space)
+                while(not self.utils.is_valid(cur_state, action)):
+                    action = random.choice(self.action_space)
 
-    def reward(self, prev_state, action) -> float:
+            # opponent's turn
+            next_state = self.p_trans(action, cur_state[:])
+            reward = (None, True)
+            if(next_state is not None):
+                reward = self.reward(cur_state, action)
+                # update equation
+                max_q_val = 0
+                if(next_state in self.q):
+                    for q_val in self.q[next_state].values():
+                        max_q_val = max(max_q_val, q_val)
+
+                self.q[tuple(cur_state)][action] = self.q[tuple(cur_state)][action] + self.alpha * (
+                    reward[0] + self.gamma*max_q_val - self.q[tuple(cur_state)][action])
+
+            if(reward[1] == True):
+                # reset the board
+                next_state = [0 for _ in range(self.board_size**2)]
+                episode += 1
+
+            cur_state = list(next_state)[:]
+
+        # setting the optimal policy
+        for s in self.q.keys():
+            action = None
+            max_q_val = float('-inf')
+            for a in self.q[s].keys():
+                val = self.q[s][a]
+                if(max_q_val < val):
+                    max_q_val = val
+                    action = a
+            self.optimal_policy[s] = action  # type: ignore
+
+    def reward(self, prev_state, action) -> tuple:
         """
         a handcrafted reward function
         based on the number of paths blocked for the opponent
@@ -177,9 +190,12 @@ class Dynamics:
                 new_score += 1
                 break
 
+        end_configuration = False
         if(self.utils.is_losing_configuration(next_state)):
             new_score -= 100
+            end_configuration = True
         elif(self.utils.is_winning_configuration(next_state)):
             new_score += 100
+            end_configuration = True
 
-        return (new_score - prev_score)
+        return (new_score - prev_score, end_configuration)
