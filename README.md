@@ -14,7 +14,7 @@ CS19B037
   pip3 install pygame
   ```
 
-- In each of the folders _task_1_ and _task_2_, run **main.py** to execute the program:
+- In each of the folders in the project, run **main.py** to execute the program:
 
   ```console
   python main.py
