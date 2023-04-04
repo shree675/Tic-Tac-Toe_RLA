@@ -5,7 +5,7 @@ CS19B037
 
 ## Setup and Installation
 
-- Install Python from https://www.python.org/downloads/release/python-380/. During installation please ensure that some features are selected (see that attached pic pythoninstallation.png)
+- Install Python from https://www.python.org/downloads/release/python-380/.
 - Run the following:
 
   ```console
