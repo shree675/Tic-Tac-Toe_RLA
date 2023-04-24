@@ -106,7 +106,7 @@ class Dynamics:
             value = copy.deepcopy(new_value)
         # policy generation
         for s in self.state_space.keys():
-            best_action_val = -1.0
+            best_action_val = float('-inf')
             best_action = None
             for action in self.action_space:
                 if(not self.utils.is_valid(s, action)):
