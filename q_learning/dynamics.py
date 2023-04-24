@@ -15,7 +15,7 @@ class Dynamics:
         self.q = defaultdict(lambda: defaultdict(float))
         self.gamma = 0.9
         self.alpha = 0.7
-        self.epsilon = 0.8
+        self.epsilon = 0.5
 
         self.generate_spaces()
         self.obtain_optimal_policy()
