@@ -1,25 +1,24 @@
-# Programming Assignment: Reinforcement Learning Algorithms
+# Tic-Tac-Toe Using Reinforcement Learning Algorithms
 
-Shreetesh M  
-CS19B037
+## About
+This project implements a tic-tac-toe agent using different RL algorithms such as value iteration, policy iteration and Q-learning.
+
+### Statistics
+* **Value iteration**: #wins ≥98%
+* **Policy iteration**: #wins ≥94%
+* **Q-learning**: #wins ≥96%
 
 ## Setup and Installation
-
 - Install Python from https://www.python.org/downloads/release/python-380/.
 - Run the following:
 
-  ```console
-  pip3 install numpy
-  pip3 install scipy
-  pip3 install pygame
+  ```powershell
+  $ pip3 install numpy
+  $ pip3 install scipy
+  $ pip3 install pygame
   ```
 
 - In each of the folders in the project, run **main.py** to execute the program:
-
-  ```console
-  python main.py
+  ```powershell
+  $ python main.py
   ```
-
-## Tasks
-
-Each folder contains the implementation of a particular task.
