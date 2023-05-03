@@ -58,14 +58,13 @@ class Dynamics:
 
     def policy(self, state) -> tuple | None:
         """
-        a deterministic arbitrary policy function
+        a deterministic policy function
         """
         if(tuple(state) in self.optimal_policy):
             return self.optimal_policy[tuple(state)]
         return None
 
     def generate_spaces(self) -> None:
-        # uncomment below line to generate state space
         self.state_space = self.utils.populate_state_space()
 
         self.action_space = [(i, j) for i in range(self.board_size)
